@@ -113,12 +113,12 @@ class Bitly {
 		 */
 		
 		$params = http_build_query ( array(
-			'version' 	=> $this->version,
+			'version'	=> $this->version,
 			'login'		=> $this->login,
 			'apiKey'	=> $this->api_key,
-			'longUrl'   => $this->url,			
+			'longUrl'	=> $this->url,			
 			'format'	=> $this->format,
-			'callback'  => $this->callback
+			'callback'	=> $this->callback
 		) );
 		
 		/**
