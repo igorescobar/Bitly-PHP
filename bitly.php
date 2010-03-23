@@ -217,8 +217,4 @@ class Bitly {
 	}
 	
 }
-
-$bitly 		= new Bitly();
-$bitly->url 	= 'http://www.google.com/';
-echo $bitly->getShortUrl();
 ?>
