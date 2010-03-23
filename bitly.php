@@ -54,7 +54,7 @@ class Bitly {
 	 * @var string
 	 */
 	
-	public $login = 'virgula';
+	public $login = 'login_bitly';
 	
 	/**
 	 * Chave gerada para acesso à API do Bit.ly
@@ -62,7 +62,7 @@ class Bitly {
 	 * @var string
 	 */
 	
-	public $api_key = 'R_469daa4b8d9bc7c09a2fba8c6b22fe0d';
+	public $api_key = 'api_key';
 	
 	/**
 	 * Formato de saída da API.
