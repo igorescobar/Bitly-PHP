@@ -1,0 +1,36 @@
+ * Classe PHP para utilização da API RESTful do Bit.ly
+ * 
+ * @author Igor Escobar (blog@igorescobar.com)
+ * 
+ * ----- ATENCAO -----
+ * 
+ * Se possível, sempre trabalhar com o formato de retorno em JSON. 
+ * O PHP possuí nativamente as funções para tratamento destes dados.
+ * Caso você precise do retorno em XML esta library vai retornar o
+ * arquivo inteiro em XML e você irá precisar tratá-lo com um XML Parser
+ * de sua escolha.  
+ *
+ * @functions getShortUrl
+ * @functions getUserhash
+ * @functions debug
+ * 
+ * @uses  
+ * 
+ * 		Se você preencheu fixo na API o login e a API-Key, você pode usar assim:
+ * 
+ * 		$bitly 		= new Bitly();
+ *		$bitly->url = 'http://www.google.com/';
+ *		$bitly->getShortUrl(); #saída: http://bit.ly/b6R4Uf
+ *		$bitly->getUserhash(); #saída: b6R4Uf
+ * 		
+ * @uses 
+ * 
+ * 		Se você não preencheu ou prefere informar os dados de Login e API-Key, use assim:
+ * 
+ * 		$bitly 		= new Bitly();'
+ *		$bitly->login	= 'seu_login_na_api_bitly';
+ *		$bitly->api_key	= 'sua_api_key';
+ *		$bitly->url 	= 'http://www.google.com/';
+ * 		$bitly->getShortUrl(); #saída: http://bit.ly/b6R4Uf
+ *		$bitly->getUserhash(); #saída: b6R4Uf
+ *
