@@ -6,6 +6,7 @@
  * @functions expand
  * @functions info
  * @functions stats
+ * @functions getData
  * @functions debug
  * 
  * ----- ATENCAO -----
