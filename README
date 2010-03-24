@@ -2,6 +2,9 @@
  * 
  * @author Igor Escobar (blog@igorescobar.com)
  * 
+ * @thanks-to Fernando Mantoan (fernandouhu@gmail.com) 
+ * --- Encontrou bugs, propos melhorias e melhorias no código.
+ * 
  * @functions shorten
  * @functions expand
  * @functions info
