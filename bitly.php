@@ -134,7 +134,7 @@ class Bitly {
 	 * @author Igor Escobar
 	 */
 	
-	public function action () {
+	private function action () {
 		
 		$this->active = false;
 		/**
