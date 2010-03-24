@@ -223,7 +223,8 @@ class Bitly {
 				
 		 if( $this->format == 'json' ) {
 			
-			$this->return = json_decode( $this->return );
+			if ( !is_object ( $this->return ) ) 
+				$this->return = json_decode( $this->return );
 			
 			if($this->return->statusCode == 'ERROR')
 				$this->fail = true;
