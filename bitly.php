@@ -16,6 +16,7 @@
  * @functions expand
  * @functions info
  * @functions stats
+ * @functions getData
  * @functions debug
  * 
  * @uses  
@@ -117,6 +118,12 @@ class Bitly {
 	
 	protected $action = null;
 	
+	public function __construct () {
+		
+		// Forçar o formato sempre em minusculo
+		$this->format = strtolower( $this->format );
+		
+	}
 	/**
 	 * Função responsável por encurtar a url diretamente no Bit.Ly
 	 *
@@ -216,14 +223,14 @@ class Bitly {
 		$this->active = true;
 		
 		 if( $this->format == 'json' ) {
-			$this->return = json_decode($this->return);
+			$this->return = json_decode( $this->return );
 		
 		} 
 		
 	}
 	
 	/**
-	 * Retorna um aparametro especifico dentro do pacote que a API retornou
+	 * Funcao utilizada para receber qualquer parametro que você queira acessar do retorno da API
 	 *
 	 * @return void
 	 * @author Igor Escobar
@@ -245,8 +252,8 @@ class Bitly {
 				 * sempre o primeiro parametro do objeto como o node de partida.
 				 */
 				
-				$ar_object_vars = get_object_vars ($this->return->results);
-				$ar_object_keys = array_keys($ar_object_vars);
+				$ar_object_vars = get_object_vars ( $this->return->results );
+				$ar_object_keys = array_keys ( $ar_object_vars );
 				$node = $ar_object_keys[0];
 				
 				/**
@@ -254,7 +261,7 @@ class Bitly {
 				 * diferente de todos os outros metodos. 
 				 */
 				
-				if($this->action != 'stats' )
+				if ( $this->action != 'stats' )
 		 			return 	$this->return->results->$node;
 				else
 					return $this->return->results;
