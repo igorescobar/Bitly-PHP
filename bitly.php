@@ -151,7 +151,7 @@ class Bitly {
 		 * Faz a requisição na API do Bit.ly
 		 */
 		
-		$this->return = file_get_contents ( 'http://api.bit.ly/' . $this->action . '?' . $params );
+		$this->return = $this->get_file_contents ( 'http://api.bit.ly/' . $this->action . '?' . $params );
 		
 	}
 	
@@ -289,6 +289,40 @@ class Bitly {
 		 	return $this->return;
          
 		 }
+		
+	}
+	
+	/**
+	 * Esta função é a responsável por fazer a requisição no servidor.
+	 * Por questões de desempenho, sempre vamos utilizar o CURL para fazer
+	 * as requisições.
+	 * 
+	 * Caso você não tenha o CURL instalado, vamos utilizar a função nativa:
+	 * file_get_contents().
+	 *
+	 * @param string $url
+	 * @return stream-response
+	 * @author Igor Escobar
+	 */
+	
+	public function get_file_contents ( $url ) {
+	
+		if ( function_exists( 'curl_init' ) ) {
+
+			$curl = curl_init();
+			curl_setopt ( $curl, CURLOPT_RETURNTRANSFER, 1 );
+			curl_setopt ( $curl, CURLOPT_URL, $url );
+			$contents = curl_exec ( $curl );
+			curl_close ( $curl );
+
+			if ( $contents ) 
+				return $contents;
+			else 
+				return false;
+				
+		} else {
+			return file_get_contents ( $url );
+		}
 		
 	}
 	
