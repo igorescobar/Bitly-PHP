@@ -133,7 +133,7 @@ class Bitly {
 	
 	public function action () {
 		
-		$this->active = true;
+		$this->active = false;
 		/**
 		 * Cria a query que será enviada para a API do Bit.ly
 		 */
