@@ -12,8 +12,10 @@
  * arquivo inteiro em XML e você irá precisar tratá-lo com um XML Parser
  * de sua escolha.  
  *
- * @functions getShortUrl
- * @functions getUserhash
+ * @functions shorten
+ * @functions expand
+ * @functions info
+ * @functions stats
  * @functions debug
  * 
  * @uses  
@@ -22,19 +24,20 @@
  * 
  * 		$bitly 		= new Bitly();
  *		$bitly->url = 'http://www.google.com/';
- *		$bitly->getShortUrl(); #saída: http://bit.ly/b6R4Uf
- *		$bitly->getUserhash(); #saída: b6R4Uf
+ *		$bitly->shorten(); 
+ *
+ *		$bitly->getData()->shortUrl; #saída: http://bit.ly/b6R4Uf
+ *		$bitly->getData()->userHash; #saída: b6R4Uf
  * 		
  * @uses 
  * 
  * 		Se você não preencheu ou prefere informar os dados de Login e API-Key, use assim:
  * 
- * 		$bitly 		= new Bitly();'
- *		$bitly->login	= 'seu_login_na_api_bitly';
- *		$bitly->api_key	= 'sua_api_key';
- *		$bitly->url 	= 'http://www.google.com/';
- * 		$bitly->getShortUrl(); #saída: http://bit.ly/b6R4Uf
- *		$bitly->getUserhash(); #saída: b6R4Uf
+ * 			$bitly 		= new Bitly();
+ *			$bitly->url = 'http://bit.ly/b6R4Uf';
+ *			$bitly->expand();
+ *	
+ *			echo $bitly->getData()->longUrl; # saída: http://www.google.com/
  *
  */
 
@@ -54,7 +57,8 @@ class Bitly {
 	 * @var string
 	 */
 	
-	public $login = 'login_bitly';
+	//public $login = 'login_bitly';
+	public $login = 'virgula';
 	
 	/**
 	 * Chave gerada para acesso à API do Bit.ly
@@ -62,7 +66,8 @@ class Bitly {
 	 * @var string
 	 */
 	
-	public $api_key = 'api_key';
+	//public $api_key = 'api_key';
+	public $api_key = 'R_469daa4b8d9bc7c09a2fba8c6b22fe0d';
 	
 	/**
 	 * Formato de saída da API.
@@ -91,14 +96,29 @@ class Bitly {
 	public $url;
 	
 	/**
-	 * Variável de controle para ser quando a API já foi invocada
+	 * Variável de controle para ser usada quando a API já foi invocada
 	 *
 	 * @var boolean
 	 */
 	
-	 protected $active = false;
+	protected $active = false;
 	
-
+	/**
+	 * Variável de controle de ser usada quando o acesso a API falhar. 
+	 *
+	 * @var boolean
+	 */
+	
+	protected $fail = false;
+	
+	/**
+	 * Ação que a biblioteca vai executar
+	 *
+	 * @var string
+	 */
+	
+	protected $action = null;
+	
 	/**
 	 * Função responsável por encurtar a url diretamente no Bit.Ly
 	 *
@@ -106,7 +126,7 @@ class Bitly {
 	 * @author Igor Escobar
 	 */
 	
-	public function shorter() {
+	public function action () {
 		
 		/**
 		 * Cria a query que será enviada para a API do Bit.ly
@@ -116,7 +136,8 @@ class Bitly {
 			'version'	=> $this->version,
 			'login'		=> $this->login,
 			'apiKey'	=> $this->api_key,
-			'longUrl'	=> $this->url,			
+			'longUrl'	=> $this->url,
+			'shortUrl'	=> $this->url,		
 			'format'	=> $this->format,
 			'callback'	=> $this->callback
 		) );
@@ -125,31 +146,129 @@ class Bitly {
 		 * Faz a requisição na API do Bit.ly
 		 */
 		
-		$this->return = file_get_contents ( 'http://api.bit.ly/shorten?' . $params );
-		$this->active = true;
+		$this->return = file_get_contents ( 'http://api.bit.ly/' . $this->action . '?' . $params );
+		
 	}
 	
 	/**
-	 * Faz a requisição para encurtar as URLs e retorna no proprio objeto o retorno.
+	 * Executa o Shorten do Bit.ly
+	 *
+	 * @author Igor Escobar
+	 */
+	
+	public function shorten () {
+		
+		$this->action = 'shorten';
+		
+		$this->action();
+				
+	}
+	
+	/**
+	 * Executa o Expand do Bit.ly
+	 *
+	 * @author Igor Escobar
+	 */
+	
+	public function expand () {
+		
+		$this->action = 'expand';
+		
+		$this->action();
+		
+	}
+	
+	/**
+	 * Executa o Info do Bit.ly
+	 *
+	 * @author Igor Escobar
+	 */
+	
+	public function info () {
+		
+		$this->action = 'info';
+		
+		$this->action();
+		
+	}
+	
+	/**
+	 * Executa o Stats do Bit.ly
+	 *
+	 * @author Igor Escobar
+	 */
+	
+	public function stats () {
+		
+		$this->action = 'stats';
+		
+		$this->action();
+		
+	}
+	
+	/**
+	 * Converte os dados da requisição na API
 	 *
 	 * @return void
 	 * @author Igor Escobar
 	 */
 	
-	public function get() {
+	public function get (){
+		   
+		$this->active = true;
 		
-		// Faz a requisição no servidor do bit.ly
-		 if( $this->active == false ) 
-			$this->shorter();
-         
-		 $formato = strtolower ( $this->format );
-         
-		 if( $formato == 'json' ) {
-         
-		 	$retorno = json_decode ( $this->return );
-		 	$node 	 = $this->url;
-         
-		 	return 		$retorno->results->$node;
+		 if( $this->format == 'json' ) {
+			$this->return = json_decode($this->return);
+		
+		} 
+		
+	}
+	
+	/**
+	 * Retorna um aparametro especifico dentro do pacote que a API retornou
+	 *
+	 * @return void
+	 * @author Igor Escobar
+	 */
+	
+	public function getData() {
+		
+		
+		if ( $this->active == false )
+			$this->get ();
+	         
+		 if ( $this->format == 'json' ) {
+
+        	if ( property_exists ( $this->return, 'results' ) ) {
+				    
+				/**
+				 * Em determinadas ocasioes o bit.ly retorna o array com uma estrutura
+				 * diferente. Para isso eu tive que programar uma solução que pega
+				 * sempre o primeiro parametro do objeto como o node de partida.
+				 */
+				
+				$ar_object_vars = get_object_vars ($this->return->results);
+				$ar_object_keys = array_keys($ar_object_vars);
+				$node = $ar_object_keys[0];
+				
+				/**
+				 * Quando utilizamos o Stats do Bitly o retorno possui uma estrutura
+				 * diferente de todos os outros metodos. 
+				 */
+				
+				if($this->action != 'stats' )
+		 			return 	$this->return->results->$node;
+				else
+					return $this->return->results;
+		
+			} else {
+				
+				// Trava o acesso as propriedades da API
+				$this->fail = true;
+				
+				// Ativa o debug
+				$this->debug();
+			}
          
 		 /**
 		  * Se você precisa que o retorno seja em XML irei retornar o XML puro para que você trate
@@ -165,42 +284,6 @@ class Bitly {
 	}
 	
 	/**
-	 * Retorna a url encurtada.
-	 *
-	 * @return String
-	 * @author Igor Escobar
-	 */
-	
-	public function getShortUrl() {
-		
-		$formato = strtolower ( $this->format );
-		
-		if( $formato == 'json' )
-			return $this->get()->shortUrl;
-		
-		return $this->get();
-		
-	}
-	
-	/**
-	 * Retorna o Hash do Usuário do link gerado.
-	 *
-	 * @return void
-	 * @author Igor Escobar
-	 */
-	
-	public function getUserHash() {
-		
-		$formato = strtolower ( $this->format );
-		
-		if( $formato == 'json' )
-			return $this->get()->userHash;
-		
-		return $this->get();
-		
-	}
-	
-	/**
 	 * Se algo estiver dando errado, chame esta função para descobrir
 	 * o que a API está retornando.
 	 *
@@ -208,7 +291,7 @@ class Bitly {
 	 * @author Igor Escobar
 	 */
 	
-	public function debug() {
+	public function debug () {
 		
 		echo "<pre>"; 
 		print_r( $this->return ); 
