@@ -223,7 +223,11 @@ class Bitly {
 		$this->active = true;
 		
 		 if( $this->format == 'json' ) {
+			
 			$this->return = json_decode( $this->return );
+			
+			if($this->return->statusCode == 'ERROR')
+				$this->fail = true;
 		
 		} 
 		
@@ -238,13 +242,16 @@ class Bitly {
 	
 	public function getData() {
 		
-		
-		if ( $this->active == false )
-			$this->get ();
-	         
+		// Se o metodo da RESTful API foi invocado, então posso prosseguir
+		if ( $this->active != false )
+			return false;
+	       
+		// Recebe os dados da requisição
+		$this->get ();
+			
 		 if ( $this->format == 'json' ) {
 
-        	if ( property_exists ( $this->return, 'results' ) ) {
+        	if ( $this->fail != true ) {
 				    
 				/**
 				 * Em determinadas ocasioes o bit.ly retorna o array com uma estrutura
@@ -267,9 +274,6 @@ class Bitly {
 					return $this->return->results;
 		
 			} else {
-				
-				// Trava o acesso as propriedades da API
-				$this->fail = true;
 				
 				// Ativa o debug
 				$this->debug();
