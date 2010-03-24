@@ -308,7 +308,7 @@ class Bitly {
 	 * @author Igor Escobar
 	 */
 	
-	public function get_file_contents ( $url ) {
+	private function get_file_contents ( $url ) {
 	
 		if ( function_exists( 'curl_init' ) ) {
 
