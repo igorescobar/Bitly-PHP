@@ -1,5 +1,31 @@
 <?php
 /**
+ * 
+ * 
+ * The MIT License
+ *
+ * Copyright (c) 2010 Igor Escobar, Bitly-PHP
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ *
+ * -----------------------------------------------------------------------------
+ * 
  * Classe PHP para utilização da API RESTful do Bit.ly
  * 
  * @author Igor Escobar (blog@igorescobar.com)
@@ -11,34 +37,11 @@
  * Caso você precise do retorno em XML esta library vai retornar o
  * arquivo inteiro em XML e você irá precisar tratá-lo com um XML Parser
  * de sua escolha.  
- *
- * @functions shorten
- * @functions expand
- * @functions info
- * @functions stats
- * @functions getData
- * @functions debug
+ * 
+ * -------------------
  * 
  * @uses  
- * 
- * 		Se você preencheu fixo na API o login e a API-Key, você pode usar assim:
- * 
- * 		$bitly 		= new Bitly();
- *		$bitly->url = 'http://www.google.com/';
- *		$bitly->shorten(); 
- *
- *		$bitly->getData()->shortUrl; #saída: http://bit.ly/b6R4Uf
- *		$bitly->getData()->userHash; #saída: b6R4Uf
- * 		
- * @uses 
- * 
- * 		Se você não preencheu ou prefere informar os dados de Login e API-Key, use assim:
- * 
- * 			$bitly 		= new Bitly();
- *			$bitly->url = 'http://bit.ly/b6R4Uf';
- *			$bitly->expand();
- *	
- *			echo $bitly->getData()->longUrl; # saída: http://www.google.com/
+ *  		http://wiki.github.com/igorescobar/Bitly-PHP/
  *
  */
 
