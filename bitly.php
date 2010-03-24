@@ -133,6 +133,7 @@ class Bitly {
 	
 	public function action () {
 		
+		$this->active = true;
 		/**
 		 * Cria a query que será enviada para a API do Bit.ly
 		 */
@@ -219,9 +220,7 @@ class Bitly {
 	 */
 	
 	public function get (){
-		
-		 $this->active = true;
-		
+				
 		 if( $this->format == 'json' ) {
 			
 			$this->return = json_decode( $this->return );
@@ -242,12 +241,12 @@ class Bitly {
 	
 	public function getData() {
 		
-		// Recebe os dados da requisição
-		$this->get ();
-		
 		// Se o metodo da RESTful API foi invocado, então posso prosseguir
 		if ( $this->active != false )
 			return false;
+			
+		// Recebe os dados da requisição
+		$this->get ();
 			
 		 if ( $this->format == 'json' ) {
 
