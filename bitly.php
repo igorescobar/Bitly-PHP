@@ -127,93 +127,6 @@ class Bitly {
 		$this->format = strtolower( $this->format );
 		
 	}
-	/**
-	 * Função responsável por encurtar a url diretamente no Bit.Ly
-	 *
-	 * @return void
-	 * @author Igor Escobar
-	 */
-	
-	private function action () {
-		
-		$this->active = false;
-		/**
-		 * Cria a query que será enviada para a API do Bit.ly
-		 */
-		
-		$params = http_build_query ( array(
-			'version'	=> $this->version,
-			'login'		=> $this->login,
-			'apiKey'	=> $this->api_key,
-			'longUrl'	=> $this->url,
-			'shortUrl'	=> $this->url,		
-			'format'	=> $this->format,
-			'callback'	=> $this->callback
-		) );
-		
-		/**
-		 * Faz a requisição na API do Bit.ly
-		 */
-		
-		$this->return = $this->get_file_contents ( 'http://api.bit.ly/' . $this->action . '?' . $params );
-		
-	}
-	
-	/**
-	 * Executa o Shorten do Bit.ly
-	 *
-	 * @author Igor Escobar
-	 */
-	
-	public function shorten () {
-		
-		$this->action = 'shorten';
-		
-		$this->action();
-				
-	}
-	
-	/**
-	 * Executa o Expand do Bit.ly
-	 *
-	 * @author Igor Escobar
-	 */
-	
-	public function expand () {
-		
-		$this->action = 'expand';
-		
-		$this->action();
-		
-	}
-	
-	/**
-	 * Executa o Info do Bit.ly
-	 *
-	 * @author Igor Escobar
-	 */
-	
-	public function info () {
-		
-		$this->action = 'info';
-		
-		$this->action();
-		
-	}
-	
-	/**
-	 * Executa o Stats do Bit.ly
-	 *
-	 * @author Igor Escobar
-	 */
-	
-	public function stats () {
-		
-		$this->action = 'stats';
-		
-		$this->action();
-		
-	}
 	
 	/**
 	 * Converte os dados da requisição na API
@@ -237,6 +150,101 @@ class Bitly {
 	}
 	
 	/**
+	 * Função responsável por encurtar a url diretamente no Bit.Ly
+	 *
+	 * @param $action - ação que será executada no bit.ly
+	 * @return void
+	 * @author Igor Escobar
+	 */
+	
+	private function action ($action) {
+		
+		$this->action = $action;
+		$this->active = false;
+		/**
+		 * Cria a query que será enviada para a API do Bit.ly
+		 */
+		
+		$params = http_build_query ( array(
+			'version'	=> $this->version,
+			'login'		=> $this->login,
+			'apiKey'	=> $this->api_key,
+			'longUrl'	=> $this->url,
+			'shortUrl'	=> $this->url,		
+			'format'	=> $this->format,
+			'callback'	=> $this->callback
+		) );
+		
+		/**
+		 * Faz a requisição na API do Bit.ly
+		 */
+		
+		$this->return = $this->get_file_contents ( 'http://api.bit.ly/' . $this->action . '?' . $params );
+		
+		// Trata os dados que foram retortados
+		$this->get();
+		
+	}
+	
+	/**
+	 * Executa o Shorten do Bit.ly
+	 *
+	 * @author Igor Escobar
+	 */
+	
+	public function shorten () {
+		
+		// Informa o tipo de ação que será executada
+		$this->action('shorten');
+		return $this->getData()->shortUrl;
+				
+	}
+	
+	/**
+	 * Executa o Expand do Bit.ly
+	 *
+	 * @author Igor Escobar
+	 */
+	
+	public function expand () {
+		
+		// Informa o tipo de ação que será executada
+		$this->action('expand');
+		return $this->getData()->longUrl;
+		
+	}
+	
+	/**
+	 * Executa o Info do Bit.ly
+	 *
+	 * @author Igor Escobar
+	 */
+	
+	public function info () {
+		
+		// Informa o tipo de ação que será executada
+		$this->action('info');
+		return $this->getData();
+		
+		
+	}
+	
+	/**
+	 * Executa o Stats do Bit.ly
+	 *
+	 * @author Igor Escobar
+	 */
+	
+	public function stats () {
+		
+		// Informa o tipo de ação que será executada
+		$this->action('stats');
+		return $this->getData();
+		
+		
+	}
+	
+	/**
 	 * Funcao utilizada para receber qualquer parametro que você queira acessar do retorno da API
 	 *
 	 * @return void
@@ -248,9 +256,6 @@ class Bitly {
 		// Se o metodo da RESTful API foi invocado, então posso prosseguir
 		if ( $this->active != false )
 			return false;
-			
-		// Recebe os dados da requisição
-		$this->get ();
 			
 		 if ( $this->format == 'json' ) {
 
