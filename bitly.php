@@ -26,17 +26,16 @@
  *
  * -----------------------------------------------------------------------------
  * 
- * Classe PHP para utilização da API RESTful do Bit.ly
+ * PHP Library to use the RESTfull API of Bit.ly
  * 
  * @author Igor Escobar (blog@igorescobar.com)
  * 
  * ----- ATENCAO -----
  * 
- * Se possível, sempre trabalhar com o formato de retorno em JSON. 
- * O PHP possuí nativamente as funções para tratamento destes dados.
- * Caso você precise do retorno em XML esta library vai retornar o
- * arquivo inteiro em XML e você irá precisar tratá-lo com um XML Parser
- * de sua escolha.  
+ * If is possible, always work with the json return. 
+ * The PHP has natively the functions to care of this type of data.
+ * If you want use a XML return, the library was return the entire response data in the XML format,
+ * then you have to use a XML Parser that you wanna use.
  * 
  * -------------------
  * 
@@ -48,7 +47,7 @@
 class Bitly {
 	
 	/**
-	 * Versão da API que você quer utilizar.
+	 * Api version that you want use.
 	 *
 	 * @var string
 	 */
@@ -56,7 +55,7 @@ class Bitly {
 	public $version = '2.0.1';
 	
 	/**
-	 * Login que foi cadastrado para acesso na API do Bit.ly
+	 * Bit.ly Login
 	 *
 	 * @var string
 	 */
@@ -64,7 +63,7 @@ class Bitly {
 	public $login = 'login_bitly';
 	
 	/**
-	 * Chave gerada para acesso à API do Bit.ly
+	 * Api-key to acess the bit.ky API.
 	 *
 	 * @var string
 	 */
@@ -72,7 +71,7 @@ class Bitly {
 	public $api_key = 'api_key';
 	
 	/**
-	 * Formato de saída da API.
+	 * API out-put format .
 	 *
 	 * @uses JSON
 	 * @uses XML
@@ -82,7 +81,8 @@ class Bitly {
 	public $format = 'json';
 	
 	/**
-	 * Função de callback. É opcional. Caso queira utilizar, basta preencher o nome da função que quer chamar.
+	 * Callback function. It's optional. If you wanna use, fill the function name that you
+	 * want call.
 	 *
 	 * @var string
 	 */
@@ -90,7 +90,7 @@ class Bitly {
 	public $callback;
 	
 	/**
-	 * Url que você quer trabalhar utilizando a API do Bit.ly
+	 * Url that you want to use on the bit.ly API.
 	 *
 	 * @var string
 	 */
@@ -98,7 +98,7 @@ class Bitly {
 	public $url;
 	
 	/**
-	 * Variável de controle para ser usada quando a API já foi invocada
+	 * To set when the API was already invoked.
 	 *
 	 * @var boolean
 	 */
@@ -106,7 +106,7 @@ class Bitly {
 	protected $active = false;
 	
 	/**
-	 * Variável de controle de ser usada quando o acesso a API falhar. 
+	 * Just in case the Bit.ly API fail. 
 	 *
 	 * @var boolean
 	 */
@@ -114,22 +114,31 @@ class Bitly {
 	protected $fail = false;
 	
 	/**
-	 * Ação que a biblioteca vai executar
+	 * Action that the library was execute
 	 *
 	 * @var string
 	 */
 	
 	protected $action = null;
 	
-	public function __construct () {
+	public function __construct ( $login = null, $api_key = null ) {
 		
-		// Forçar o formato sempre em minusculo
+		// Force the lower-case format
 		$this->format = strtolower( $this->format );
+		
+		/**
+		 * If you prefer you also can use the Bitly Library like this: 
+		 * $bit = new Bitly('<your_login>', '<your_api_key>');
+		 */
+		
+		$this->login 	= ( !is_null ( $login ) ) ? $login : $this->login;
+		$this->api_key 	= ( !is_null ( $login ) ) ? $api_key : $this->api_key;
+		
 		
 	}
 	
 	/**
-	 * Converte os dados da requisição na API
+	 * Convert data from bit.ly API
 	 *
 	 * @return void
 	 * @author Igor Escobar
@@ -150,19 +159,21 @@ class Bitly {
 	}
 	
 	/**
-	 * Função responsável por encurtar a url diretamente no Bit.Ly
+	 * Function responsible to read what the class have to do on the bit.ly API
+	 * and make that simple.
 	 *
-	 * @param $action - ação que será executada no bit.ly
+	 * @param $action - action to perform on bit.ly
 	 * @return void
 	 * @author Igor Escobar
 	 */
 	
-	private function action ($action) {
+	private function action ( $action ) {
 		
 		$this->action = $action;
 		$this->active = false;
+		
 		/**
-		 * Cria a query que será enviada para a API do Bit.ly
+		 * Create the packet that was sent to the Bit.ly API
 		 */
 		
 		$params = http_build_query ( array(
@@ -175,41 +186,64 @@ class Bitly {
 			'callback'	=> $this->callback
 		) );
 		
-		/**
-		 * Faz a requisição na API do Bit.ly
-		 */
-		
+	 	// Make a requisition to the Bit.ly API		
 		$this->return = $this->get_file_contents ( 'http://api.bit.ly/' . $this->action . '?' . $params );
 		
-		// Trata os dados que foram retortados
+		// Take care of the response
 		$this->get();
 		
 	}
 	
 	/**
-	 * Executa o Shorten do Bit.ly
+	 * Execute the Bit.ly shorten method
 	 *
 	 * @author Igor Escobar
 	 */
 	
-	public function shorten () {
+	public function shorten ( $url = null ) {
+
+		/**
+		 * Just i case if you wanna invoke this method like this: 
+		 * $bitly->shorten ( '<long_url>' );
+		 */
 		
-		// Informa o tipo de ação que será executada
+		$this->url = ( !is_null( $url ) ) ? $url : $this->url;
+		
+		// Inform the action type that you need execute
 		$this->action('shorten');
+		
+		/**
+		 * Shortcut if you wanna read the shortened url directly when you
+		 * print the method. 
+		 */
+		
 		return $this->getData()->shortUrl;
 				
 	}
 	
 	/**
-	 * Executa o Expand do Bit.ly
+	 * Execute the expand method directly on Bit.ly
 	 *
 	 * @author Igor Escobar
 	 */
 	
-	public function expand () {
+	public function expand ( $url = null ) {
 		
-		// Informa o tipo de ação que será executada
+		/**
+		 * Just i case if you wanna invoke this method like this: 
+		 * $bitly->shorten ( '<short_url>' );
+		 */
+		
+		$this->url = ( !is_null( $url ) ) ? $url : $this->url;
+		
+		// Inform the action type that you need execute
 		$this->action('expand');
+		
+		/**
+		 * Shortcut if you wanna read the shortened url directly when you
+		 * print the method. 
+		 */
+		
 		return $this->getData()->longUrl;
 		
 	}
@@ -220,10 +254,23 @@ class Bitly {
 	 * @author Igor Escobar
 	 */
 	
-	public function info () {
+	public function info ( $url = null ) {
 		
-		// Informa o tipo de ação que será executada
+		/**
+		 * Just i case if you wanna invoke this method like this: 
+		 * $bitly->shorten ( '<short_url>' );
+		 */
+		
+		$this->url = ( !is_null( $url ) ) ? $url : $this->url;
+		
+		// Inform the action type that you need execute
 		$this->action('info');
+		
+		/**
+		 * Shortcut if you wanna read the shortened url directly when you
+		 * print the method. 
+		 */
+		
 		return $this->getData();
 		
 		
@@ -235,17 +282,30 @@ class Bitly {
 	 * @author Igor Escobar
 	 */
 	
-	public function stats () {
+	public function stats ( $url = null ) {
 		
-		// Informa o tipo de ação que será executada
+		/**
+		 * Just i case if you wanna invoke this method like this: 
+		 * $bitly->shorten ( '<short_url>' );
+		 */
+		
+		$this->url = ( !is_null( $url ) ) ? $url : $this->url;
+		
+		// Inform the action type that you need execute
 		$this->action('stats');
+		
+		/**
+		 * Shortcut if you wanna read the shortened url directly when you
+		 * print the method. 
+		 */
+		
 		return $this->getData();
 		
 		
 	}
 	
 	/**
-	 * Funcao utilizada para receber qualquer parametro que você queira acessar do retorno da API
+	 * Use this function if you wanna read any parameter from the response bit.ly result.
 	 *
 	 * @return void
 	 * @author Igor Escobar
@@ -253,7 +313,7 @@ class Bitly {
 	
 	public function getData() {
 		
-		// Se o metodo da RESTful API foi invocado, então posso prosseguir
+		// If the RESTful API was invoked, then i will proceed.
 		if ( $this->active != false )
 			return false;
 			
@@ -262,19 +322,17 @@ class Bitly {
         	if ( $this->fail != true ) {
 				    
 				/**
-				 * Em determinadas ocasioes o bit.ly retorna o array com uma estrutura
-				 * diferente. Para isso eu tive que programar uma solução que pega
-				 * sempre o primeiro parametro do objeto como o node de partida.
+				 * In some cases the bit.ly return a diferent array. Then i have
+				 * to develop a exit to do this method work correctly on all function
+				 * cases. The solution is get always the first parameter from the
+				 * 'result' parameter from bit.ly.
 				 */
 				
 				$ar_object_vars = get_object_vars ( $this->return->results );
 				$ar_object_keys = array_keys ( $ar_object_vars );
 				$node = $ar_object_keys[0];
 				
-				/**
-				 * Quando utilizamos o Stats do Bitly o retorno possui uma estrutura
-				 * diferente de todos os outros metodos. 
-				 */
+				 // Stats have return the response on a diferent node.
 				
 				if ( $this->action != 'stats' )
 		 			return 	$this->return->results->$node;
@@ -283,13 +341,13 @@ class Bitly {
 		
 			} else {
 				
-				// Ativa o debug
+				// Debug is activated
 				$this->debug();
 			}
          
 		 /**
-		  * Se você precisa que o retorno seja em XML irei retornar o XML puro para que você trate
-		  * com um XML-Parser de sua preferencia. 
+		  * If you need a XML return i always will return the original reponse from bit.ly. 
+		  * Then will have to use a XML Parser that you prefer.
 		  */
 		
 		 } elseif ( $formato == 'xml' ) {
@@ -301,12 +359,10 @@ class Bitly {
 	}
 	
 	/**
-	 * Esta função é a responsável por fazer a requisição no servidor.
-	 * Por questões de desempenho, sempre vamos utilizar o CURL para fazer
-	 * as requisições.
+	 * This functions is responsible to make the requisition on the Bit.ly server.
+	 * By benchmarking propouses the class always will use the cURL to make all requisitions.
 	 * 
-	 * Caso você não tenha o CURL instalado, vamos utilizar a função nativa:
-	 * file_get_contents().
+	 * Case you don't have the cURL extensions on your server, then i will use the file_get_contents (slow) to make it for you. 
 	 *
 	 * @param string $url
 	 * @return stream-response
@@ -335,8 +391,7 @@ class Bitly {
 	}
 	
 	/**
-	 * Se algo estiver dando errado, chame esta função para descobrir
-	 * o que a API está retornando.
+	 * If anything gone wrong, call this functions to discover what the fuck is going on.
 	 *
 	 * @return void
 	 * @author Igor Escobar
