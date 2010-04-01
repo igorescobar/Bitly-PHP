@@ -32,7 +32,7 @@
  * 
  * ----- ATENCAO -----
  * 
- * If is possible, always work with the json return. 
+ * If possible, always work with the json return. 
  * The PHP has natively the functions to care of this type of data.
  * If you want use a XML return, the library was return the entire response data in the XML format,
  * then you have to use a XML Parser that you wanna use.
@@ -153,6 +153,8 @@ class Bitly {
 			
 			if($this->return->statusCode == 'ERROR')
 				$this->fail = true;
+			else
+				$this->fail = false;		
 		
 		} 
 		
