@@ -2,9 +2,11 @@
 	
 	include_once("../bitly.php");
 	
-	$bitly 		= new Bitly();
-	$bitly->url = 'http://bit.ly/b6R4Uf';
-	$bitly->expand();
+	$bitly = new Bitly('<your_login>','<your_api_key>');
+	echo $bitly->expand('http://bit.ly/b6R4Uf'); // shortcut to print the long url
 	
-	echo $bitly->getData()->longUrl;
+	// Detailed return
+	
+	print_r ( $bitly->getData () );
+
 ?>

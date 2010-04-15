@@ -2,9 +2,7 @@
 	
 	include_once("../bitly.php");
 	
-	$bitly 		= new Bitly();
-	$bitly->url = 'http://bit.ly/b6R4Uf';
-	$bitly->info();
-	
-	echo $bitly->getData()->thumbnail->medium;
+	$bitly = new Bitly('<your_login>','<your_api_key>');
+	print_r ( $bitly->info ( 'http://bit.ly/b6R4Uf' ) );
+
 ?>
